@@ -1,23 +1,19 @@
-/* TUTORIAL SITE
-	site : 	http://code-epicenter.com/how-to-login-amazon-using-phantomjs-working-example,
-			https://gist.github.com/diogofrazao/6ff614dddd7ac688617c567cf0869a5f,
-			https://gist.github.com/ecin/2473860
-*/
-
 /*********SETTINGS*********************/
-var url = 'https://www.facebook.com/login.php',
-	email = '',
-	pass = '',
-	filename = 'fb.png',
-	CookieJar = "cookejar.json"
+var email = '',
+    pass = '',
+    filename = 'fb.png',
+    CookieJar = "cookejar.json"
 
 var webPage = require('webpage');
-var page = webPage.create();
 var fs = require('fs');
 var pageResponses = {};
+var page = webPage.create();
 page.settings.userAgent = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36';
 page.settings.javascriptEnabled = true;
-page.settings.loadImages = false;//Script is much faster with this field set to false
+page.settings.loadImages = false; //Script is much faster with this field set to false
+
+
+
 phantom.cookiesEnabled = true;
 phantom.javascriptEnabled = true;
 /*********SETTINGS END*****************/
@@ -41,34 +37,43 @@ if(fs.isFile(CookieJar))
 
 /**********DEFINE STEPS THAT FANTOM SHOULD DO***********************/
 
+function login() {
+    var url = 'https://www.facebook.com/login.php';
+
+    page.open(url, function(status) {
+
+        if (status === "success") {
+            page.onConsoleMessage = function(msg, lineNum, sourceId) {
+                console.log('CONSOLE: ' + msg + ' (from line #' + lineNum + ' in "' + sourceId + '")');
+            };
+
+            page.evaluate(function() {
+                document.getElementById("username").value = '';
+                document.getElementById("password").value = '';
+                document.getElementById("loginBtn").click();
+            });
+
+            setTimeout(function() {
+                page.render(filename);
+                phantom.exit();
+            }, 5000);
+        }
+
+    });
+}
+
+var url = 'http://detectportal.firefox.com/success.txt';
 page.open(url, function(status) {
 
-		if (status === "success") {
-			page.onConsoleMessage = function(msg, lineNum, sourceId) {
-			console.log('CONSOLE: ' + msg + ' (from line #' + lineNum + ' in "' + sourceId + '")');
-		};
+    var content = page.plainText;
+    var success = new String('success');
 
-		page.evaluate(function() {
-/*
-			var title = document.title
-
-			if(title == "") {	
-				console.log('Page title is login, ' + title);
-				phantom.exit();
-			};
-*/
-			document.getElementById("email").value = '';
-	      	document.getElementById("pass").value = '';
-		  	document.getElementById("loginbutton").click();
-	    });
-
-	    setTimeout(function() {
-			page.render(filename);
-			phantom.exit();
-			}, 5000);
-		}
-	
+    if (content.valueOf() != success.valueOf()) {
+        login();
+    }
+    phantom.exit();
 });
+
 /**********END STEPS THAT FANTOM SHOULD DO***********************/
 
 /**
