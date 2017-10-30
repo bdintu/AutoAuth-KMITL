@@ -1,2 +1,2 @@
 #!/bin/bash
-phantomjs kmitl.js
+phantomjs auth.js
