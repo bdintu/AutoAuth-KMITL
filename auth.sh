@@ -1,2 +1,2 @@
 #!/bin/bash
-phantomjs auth.js
+phantomjs --ignore-ssl-errors=true auth.js

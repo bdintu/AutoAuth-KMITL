@@ -54,9 +54,12 @@ page.open(url, function(status) {
         };
 
         page.evaluate(function() {
-            document.getElementById("username").value = '';
-            document.getElementById("password").value = '';
-            document.getElementById("loginBtn").click();
+	  document.getElementById('username').classList.remove('input-empty');
+          document.getElementById('username').value = '58010280';
+          document.getElementById('password').classList.remove('input-empty');
+          document.getElementById('password').value = 'dixPeurD';
+          document.getElementById('loginBtn').click();
+
         });
 
         setTimeout(function() {
