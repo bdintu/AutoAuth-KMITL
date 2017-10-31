@@ -15,9 +15,9 @@ phantom.cookiesEnabled = true;
 phantom.javascriptEnabled = true;
 /*********SETTINGS END*****************/
 
-console.log('All settings loaded, start with execution');
+//console.log('All settings loaded, start with execution');
 page.onConsoleMessage = function(msg) {
-    console.log(msg);
+//    console.log(msg);
 };
 /**********COOKIE***********************/
 
@@ -35,31 +35,37 @@ if(fs.isFile(CookieJar))
 
 /**********DEFINE STEPS THAT FANTOM SHOULD DO***********************/
 
+var dateTime = require('node-datetime');
+var dt = dateTime.create();
+var formatted = dt.format('Y-m-d H:M:S');
+console.log(formatted);
+
 var page_detect = require('webpage').create();
 var url = 'http://detectportal.firefox.com/success.txt';
 page_detect.open(url, function(status) {
+	page_detect.render('check.png');
     if (page_detect.plainText === 'success\n') {
-		console.log('logined');
+		console.log('\tconnect ok');
 		phantom.exit();
 	}
 
-	console.log('unlogin');
+	console.log('\tconnect failed');
 });
 
 var url = 'https://mylogin.kmitl.ac.th:8445/PortalServer/customize/1498718975450/pc/auth.jsp';
 page.open(url, function(status) {
     if (status === "success") {
         page.onConsoleMessage = function(msg, lineNum, sourceId) {
-            console.log('CONSOLE: ' + msg + ' (from line #' + lineNum + ' in "' + sourceId + '")');
+            //console.log('CONSOLE: ' + msg + ' (from line #' + lineNum + ' in "' + sourceId + '")');
         };
 
         page.evaluate(function() {
 	  document.getElementById('username').classList.remove('input-empty');
-          document.getElementById('username').value = '58010280';
+          document.getElementById('username').value = '';
           document.getElementById('password').classList.remove('input-empty');
-          document.getElementById('password').value = 'dixPeurD';
+          document.getElementById('password').value = '';
           document.getElementById('loginBtn').click();
-
+	  console.log('\tauth kmitl ok');
         });
 
         setTimeout(function() {
@@ -78,14 +84,14 @@ page.open(url, function(status) {
 
 page.onLoadStarted = function() {
     loadInProgress = true;
-    console.log('Loading started');
+//    console.log('Loading started');
 };
 
 page.onLoadFinished = function() {
     loadInProgress = false;
-    console.log('Loading finished');
+//    console.log('Loading finished');
 };
 
 page.onConsoleMessage = function(msg) {
-    console.log(msg);
+//    console.log(msg);
 };
